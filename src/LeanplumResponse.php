@@ -66,4 +66,24 @@ class LeanplumResponse
 
         return $this->wasValid = $this->invalidItems === 0;
     }
+
+
+    /**
+     * @return null|string
+     */
+    public function getMessage()
+    {
+        if ($this->wasValid()) {
+            return null;
+        }
+
+        $response = $this->guzzleResponse->json();
+        foreach ($response['response'] as $item) {
+            if (!empty($item['error']['message'])) {
+                return $item['error']['message'];
+            } elseif (!empty($item['warning']['message'])) {
+                return $item['warning']['message'];
+            }
+        }
+    }
 }
