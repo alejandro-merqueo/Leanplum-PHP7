@@ -93,6 +93,16 @@ class LeanplumClient implements LeanplumClientInterface
     }
 
     /**
+     * @param boolean $devMode
+     * @return $this
+     */
+    public function setDevMode($devMode)
+    {
+        $this->devMode = $devMode;
+        return $this;
+    }
+
+    /**
      * @param string $apiVersion
      * @return $this
      */
