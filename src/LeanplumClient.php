@@ -1,10 +1,16 @@
 <?php
+
 namespace Leanplum;
 
 use Guzzle\Http\Client;
+use Leanplum\Message\Request\PushNotification;
+use Leanplum\Message\Request\RequestAbstract;
+use Leanplum\Message\Response;
 
 /**
  * Default AWS client implementation
+ *
+ * @method LeanplumResponse sendMessage(PushNotification $pushnotification)
  */
 class LeanplumClient implements LeanplumClientInterface
 {
@@ -35,12 +41,23 @@ class LeanplumClient implements LeanplumClientInterface
     protected $client = null;
 
     /**
+     * @var Client|null
+     */
+    protected $devMode;
+
+    /**
+     * @var Response
+     */
+    protected $response;
+
+    /**
      * LeanplumClient constructor.
      * @param string $clientKey
      * @param string $appId
      * @param string $apiVersion
+     * @param boolean $devMode
      */
-    public function __construct($clientKey = null, $appId = null, $apiVersion = null)
+    public function __construct($clientKey = null, $appId = null, $apiVersion = null, $devMode = true)
     {
         if (null !== $clientKey) {
             $this->setClientKey($clientKey);
@@ -51,6 +68,8 @@ class LeanplumClient implements LeanplumClientInterface
         if (null !== $apiVersion) {
             $this->setApiVersion($apiVersion);
         }
+
+        $this->devMode = $devMode;
     }
 
     /**
@@ -85,32 +104,32 @@ class LeanplumClient implements LeanplumClientInterface
 
     /**
      * @param $method
-     * @param Message\Request\RequestAbstract|null $arguments
-     * @return \Guzzle\Http\Message\Response
+     * @param \Leanplum\Message\Request\RequestAbstract|array $arguments
+     * @return LeanplumResponse
      */
-    public function __call($method, $arguments = null)
+    public function __call($method, array $arguments)
     {
         $message = array_pop($arguments);
         if (!in_array($method, $this->validMethods())) {
             throw new \InvalidArgumentException("Invalid method");
         }
 
-        $uriParams = array(
+        $uriParams = [
             'appId' => $this->appId,
             'action' => $message->getAction(),
             'clientKey' => $this->clientKey,
             'apiVersion' => $this->apiVersion,
+            'devMode' => $this->devMode,
             'time' => time(),
-        );
+        ];
 
         $url = self::LEANPLUM_URL . http_build_query($uriParams);
-        $request = $this->getClient()->post(
-            $url,
-            array('Content-Type' => 'application/json')
-        );
+        $request = $this->getClient()->post($url, ['Content-Type' => 'application/json']);
 
         $request->setBody(json_encode($message->format()));
-        return $request->send();
+        $this->response = new LeanplumResponse($request->send());
+
+        return $this->response;
     }
 
     /**
@@ -122,6 +141,7 @@ class LeanplumClient implements LeanplumClientInterface
         if (null === $this->client) {
             $this->client = new Client();
         }
+
         return $this->client;
     }
 
@@ -130,6 +150,6 @@ class LeanplumClient implements LeanplumClientInterface
      */
     protected function validMethods()
     {
-        return array('track', 'start', 'resumeSession');
+        return ['track', 'start', 'resumeSession', 'sendMessage'];
     }
 }

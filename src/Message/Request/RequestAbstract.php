@@ -37,4 +37,18 @@ abstract class RequestAbstract
             die("method $method does not exist\n");
         }
     }
+
+    /**
+     * @param string $name
+     * @param string $value
+     * @return $this
+     */
+    public function set($name, $value)
+    {
+        if (property_exists(get_class($this), $name)) {
+            $this->{$name} = $value;
+        }
+        return $this;
+    }
+
 }
