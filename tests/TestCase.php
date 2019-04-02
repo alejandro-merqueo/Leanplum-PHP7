@@ -3,12 +3,12 @@
 namespace LeanplumTests;
 
 use Leanplum\LeanplumClient;
-use PHPUnit_Framework_TestCase;
+use PHPUnit\Framework\TestCase as PHPUnitTestCase;
 
-class TestCase extends PHPUnit_Framework_TestCase
+class TestCase extends PHPUnitTestCase
 {
-    const DEV_KEY = 'dev_FUEQ91';
-    const APP_ID = 'app_tVpD';
+    const DEV_KEY = 'dev_key';
+    const APP_ID = 'app_id';
 
     /**
      * @return LeanplumClient

@@ -2,7 +2,7 @@
 
 namespace Leanplum;
 
-use Guzzle\Http\Message\Response;
+use GuzzleHttp\Psr7\Response;
 
 /**
  * Class LeanplumResponse
@@ -54,8 +54,7 @@ class LeanplumResponse
             return $this->wasValid;
         }
 
-        $response = $this->guzzleResponse->json();
-
+        $response = json_decode($this->guzzleResponse->getBody(), true);
         foreach ($response['response'] as $item) {
             if ($item['success'] && empty($item['error']) && empty($item['warning'])) {
                 $this->validItems++;
@@ -64,7 +63,9 @@ class LeanplumResponse
             }
         }
 
-        return $this->wasValid = $this->invalidItems === 0;
+        $this->wasValid = $this->invalidItems === 0;
+
+        return $this->wasValid;
     }
 
 
@@ -77,7 +78,8 @@ class LeanplumResponse
             return null;
         }
 
-        $response = $this->guzzleResponse->json();
+        $response = json_decode($this->guzzleResponse->getBody(), true);
+        var_dump($response);exit;
         foreach ($response['response'] as $item) {
             if (!empty($item['error']['message'])) {
                 return $item['error']['message'];

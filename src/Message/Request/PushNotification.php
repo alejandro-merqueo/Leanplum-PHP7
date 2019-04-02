@@ -1,6 +1,7 @@
 <?php
 
 namespace Leanplum\Message\Request;
+
 use Leanplum\Exceptions\InvalidArgumentException;
 
 /**

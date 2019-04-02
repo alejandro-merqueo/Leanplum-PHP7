@@ -1,4 +1,5 @@
 <?php
+
 namespace Leanplum;
 
 use Leanplum\Message\Request\RequestAbstract;

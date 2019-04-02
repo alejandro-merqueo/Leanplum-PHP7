@@ -2,7 +2,7 @@
 
 namespace Leanplum;
 
-use Guzzle\Http\Client;
+use GuzzleHttp\Client;
 use Leanplum\Message\Request\PushNotification;
 use Leanplum\Message\Request\RequestAbstract;
 use Leanplum\Message\Response;
@@ -134,10 +134,15 @@ class LeanplumClient implements LeanplumClientInterface
         ];
 
         $url = self::LEANPLUM_URL . http_build_query($uriParams);
-        $request = $this->getClient()->post($url, ['Content-Type' => 'application/json']);
+        $response = $this->getClient()->post(
+            $url,
+            [
+                'Content-Type' => 'application/json',
+                'body' => json_encode($message->format())
+            ]
+        );
 
-        $request->setBody(json_encode($message->format()));
-        $this->response = new LeanplumResponse($request->send());
+        $this->response = new LeanplumResponse($response);
 
         return $this->response;
     }

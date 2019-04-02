@@ -1,6 +1,6 @@
 {
-  "name": "merqueo/leanplum-php",
-  "homepage": "http://minube.com",
+  "name": "merqueo/leanplum-php7",
+  "homepage": "https://merqueo.com",
   "description": "Leanplum SDK for PHP - Use Leanplum in your PHP project",
   "keywords": [
     "leanplum",
@@ -10,8 +10,8 @@
   "license": "Apache-2.0",
   "authors": [
     {
-      "name": "Minube",
-      "homepage": "http://www.minube.com"
+      "name": "Merqueo",
+      "homepage": "https://merqueo.com"
     }
   ],
   "autoload": {
@@ -25,11 +25,10 @@
     }
   },
   "require": {
-    "php": ">=5.6",
-    "guzzle/guzzle": "~3.9"
+    "php": ">=7.1",
+    "guzzlehttp/guzzle": "^6.3"
   },
   "require-dev": {
-    "phpunit/phpunit": "5.1.*"
+    "phpunit/phpunit": "~8.0"
   }
 }
-
